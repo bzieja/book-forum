@@ -10,6 +10,8 @@ import pl.bzpb.bookforum.dao.entity.User;
 import pl.bzpb.bookforum.services.UserService;
 import pl.bzpb.bookforum.services.exceptions.UserAlreadyRegistered;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import java.net.http.HttpResponse;
 
 @RestController
@@ -36,7 +38,13 @@ public class BookForumApi {
     }
 
     @PostMapping("/users/login")
-    public ResponseEntity<String> login(@RequestBody AuthenticationRequest authenticationRequest) {
+    public ResponseEntity<String> login(@RequestBody AuthenticationRequest authenticationRequest, HttpServletResponse response) {
+
+        Cookie cookie = new Cookie("authorization", userService.login(authenticationRequest));
+        cookie.setMaxAge(60 * 60);
+        cookie.setPath("/");
+        response.addCookie(cookie);
+
         return new ResponseEntity<>(userService.login(authenticationRequest), HttpStatus.OK);
     }
 
