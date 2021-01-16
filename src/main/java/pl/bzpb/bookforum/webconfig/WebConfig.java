@@ -32,11 +32,10 @@ public class WebConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
-        //http
                 .authorizeRequests()
-                .antMatchers("/api/users").permitAll()
-                .antMatchers("/api/users/login").permitAll()
-                .antMatchers("/api/test1").hasRole("ADMIN")
+                .antMatchers("/api/user").permitAll()
+                .antMatchers("/api/user/login").permitAll()
+                .antMatchers("/api/user/test1").hasRole("ADMIN")
                 .anyRequest().authenticated()
                 .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
@@ -45,7 +44,6 @@ public class WebConfig extends WebSecurityConfigurerAdapter {
         //super.configure(http);
     }
 
-    ////////
     @Bean
     public PasswordEncoder passwordEncoder () {
         return new BCryptPasswordEncoder();
