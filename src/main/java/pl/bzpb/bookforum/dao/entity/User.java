@@ -31,6 +31,11 @@ public class User {
         this.password = password;
     }
 
+    public void setUserOnRating(Rating rating) {
+        //this.ratings.add(rating);
+        rating.setUser(this);
+    }
+
     public String getNickname() {
         return nickname;
     }

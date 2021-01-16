@@ -46,7 +46,6 @@ public class UserServiceApi {
         return new ResponseEntity<>(userService.login(authenticationRequest), HttpStatus.OK);
     }
 
-
     @GetMapping("/test1")
     public ResponseEntity<String> test1() {
         return new ResponseEntity<>("test1", HttpStatus.OK);

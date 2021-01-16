@@ -29,6 +29,11 @@ public class Book {
         this.author = author;
     }
 
+    public void addRating(Rating rating) {
+        this.ratings.add(rating);
+        rating.setBook(this);
+    }
+
     public Long getId() {
         return isbn;
     }
