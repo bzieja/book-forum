@@ -50,6 +50,16 @@ public class BookServiceApi {
         }
     }
 
+    @PutMapping("/{id}")
+    ResponseEntity<?> editBook(@RequestBody Book book, @PathVariable Long id) {
+        try{
+            bookService.editBook(book, id);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+    }
+
 
 
 

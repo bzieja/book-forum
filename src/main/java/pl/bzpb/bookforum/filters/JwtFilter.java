@@ -51,7 +51,7 @@ public class JwtFilter extends OncePerRequestFilter {
             authorizationHeader = cookie.getValue();
             token = authorizationHeader;
             userName = jwtUtil.extractUserName(token);
-            System.out.println(authorizationHeader);
+            //System.out.println(authorizationHeader);
         }
 
         //final String authorizationHeader = httpServletRequest.getHeader("Authorization");

@@ -23,7 +23,8 @@ public class Book {
 
     public Book() {}
 
-    public Book(String title, LocalDate dateOfPublication, String author) {
+    public Book(String title, LocalDate dateOfPublication, String author, Long isbn) {
+        this.isbn = isbn;
         this.title = title;
         this.dateOfPublication = dateOfPublication;
         this.author = author;
@@ -32,14 +33,6 @@ public class Book {
     public void addRating(Rating rating) {
         this.ratings.add(rating);
         rating.setBook(this);
-    }
-
-    public Long getId() {
-        return isbn;
-    }
-
-    public void setId(Long id) {
-        this.isbn = id;
     }
 
     public Long getIsbn() {

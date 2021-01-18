@@ -22,7 +22,7 @@ public class BookService {
     }
 
     public void addBook(Book book) {
-        Optional<Book> optionalBook = bookRepo.findById(book.getId());
+        Optional<Book> optionalBook = bookRepo.findById(book.getIsbn());
 
         if (optionalBook.isPresent()) {
             //wyrzucic wyjatek throw BookAlreadyExist
@@ -42,6 +42,21 @@ public class BookService {
         try{
             Book book = bookRepo.findById(id).get();
             bookRepo.delete(book);
+        } catch (Exception e){
+            throw new Exception();
+        }
+    }
+
+    public void editBook(Book bookedit, Long id) throws Exception {
+        try{
+            Book book = bookRepo.findById(id).get();
+            if(!bookedit.getAuthor().equals("")){
+                book.setAuthor(bookedit.getAuthor());
+            }
+            if(!bookedit.getTitle().equals("")){
+                book.setTitle(bookedit.getTitle());
+            }
+            bookRepo.save(book);
         } catch (Exception e){
             throw new Exception();
         }
