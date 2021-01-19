@@ -16,6 +16,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 @Component
@@ -33,36 +34,18 @@ public class JwtFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
 
-        Cookie cookie = null;
-        Cookie[] cookies = httpServletRequest.getCookies();
-        if (cookies != null) {
-            for (Cookie currentCookie : cookies) {
-                if (currentCookie.getName().equals("authorization")) {
-                    cookie = currentCookie;
-                    break;
-                }
-            }
-        }
+        Cookie authorizationCookie = Arrays.stream(httpServletRequest.getCookies()).
+                filter(cookie -> "authorization".equals(cookie.getName())).findAny().orElse(null);
 
-        String authorizationHeader = null;
-        String userName = null;
+        String username = null;
         String token = null;
-        if (cookie != null) {
-            authorizationHeader = cookie.getValue();
-            token = authorizationHeader;
-            userName = jwtUtil.extractUserName(token);
-            //System.out.println(authorizationHeader);
+        if (authorizationCookie != null) {
+            token = authorizationCookie.getValue();
+            username = jwtUtil.extractUserName(token);
         }
 
-        //final String authorizationHeader = httpServletRequest.getHeader("Authorization");
-        /*if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            token = authorizationHeader.substring(7);
-            userName = jwtUtil.extractUserName(token);
-        }*/
-
-
-        if (userName != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = myUserDetailsService.loadUserByUsername(userName);
+        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            UserDetails userDetails = myUserDetailsService.loadUserByUsername(username);
 
             if (jwtUtil.validateToken(token, userDetails)) {
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
@@ -72,7 +55,6 @@ public class JwtFilter extends OncePerRequestFilter {
                 usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));
                 SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
             }
-
         }
 
         filterChain.doFilter(httpServletRequest, httpServletResponse);

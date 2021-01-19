@@ -5,21 +5,25 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.bzpb.bookforum.dao.entity.AuthenticationRequest;
+import pl.bzpb.bookforum.dao.entity.Book;
+import pl.bzpb.bookforum.dao.entity.Rating;
 import pl.bzpb.bookforum.dao.entity.User;
 import pl.bzpb.bookforum.services.UserService;
 import pl.bzpb.bookforum.services.exceptions.UserAlreadyRegistered;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/user")
-public class UserServiceApi {
+public class UserApi {
 
     UserService userService;
 
     @Autowired
-    public UserServiceApi(UserService userService) {
+    public UserApi(UserService userService) {
         this.userService = userService;
     }
 
@@ -43,18 +47,17 @@ public class UserServiceApi {
         cookie.setPath("/");
         response.addCookie(cookie);
 
-        return new ResponseEntity<>(userService.login(authenticationRequest), HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping("/test1")
-    public ResponseEntity<String> test1() {
-        return new ResponseEntity<>("test1", HttpStatus.OK);
+    @GetMapping("/ratings/{nickname}")
+    ResponseEntity<List<Rating>> getBooks(@PathVariable String nickname) {
+        try{
+            List <Rating> ratings = userService.getUserRatings(nickname);
+            return new ResponseEntity<>(ratings, HttpStatus.OK);
+        } catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
-
-    @GetMapping("/test2")
-    public ResponseEntity<String> test2() {
-        return new ResponseEntity<>("test2", HttpStatus.OK);
-    }
-
 
 }

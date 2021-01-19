@@ -34,9 +34,9 @@ public class WebConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeRequests()
-                    .antMatchers("/api/user").permitAll()
-                    .antMatchers("/api/user/login").permitAll()
-                    .antMatchers("/api/user/test1").hasRole("ADMIN")
+                    .antMatchers(HttpMethod.POST, "/api/user").permitAll()
+                    .antMatchers(HttpMethod.POST, "/api/user/login").permitAll()
+                    .antMatchers(HttpMethod.GET, "/api/user/ratings").permitAll()
 
                     .antMatchers(HttpMethod.DELETE,"/api/book/*").hasRole("ADMIN")
                     .antMatchers(HttpMethod.PUT,"/api/book/*").hasRole("ADMIN")
@@ -46,6 +46,7 @@ public class WebConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers(HttpMethod.DELETE,"/api/book/rating/*").hasRole("ADMIN")
                     .antMatchers(HttpMethod.POST,"/api/book/rating/*").permitAll()
                     .antMatchers(HttpMethod.GET,"/api/book/rating/*").permitAll()
+
 
                 .anyRequest().authenticated()
                 .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);

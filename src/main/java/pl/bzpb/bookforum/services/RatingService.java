@@ -1,5 +1,8 @@
 package pl.bzpb.bookforum.services;
 
+import io.jsonwebtoken.Jwt;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.bzpb.bookforum.dao.BookRepo;
@@ -8,11 +11,12 @@ import pl.bzpb.bookforum.dao.UserRepo;
 import pl.bzpb.bookforum.dao.entity.Book;
 import pl.bzpb.bookforum.dao.entity.Rating;
 import pl.bzpb.bookforum.dao.entity.User;
+import pl.bzpb.bookforum.services.exceptions.UserAlreadyRegistered;
+import pl.bzpb.bookforum.util.JwtUtil;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import javax.servlet.http.Cookie;
+import java.util.*;
+import java.util.stream.StreamSupport;
 
 @Service
 public class RatingService {
@@ -20,12 +24,15 @@ public class RatingService {
     BookRepo bookRepo;
     RatingRepo ratingRepo;
     UserRepo userRepo;
+    JwtUtil jwtUtil;
+    private static final Logger log = LoggerFactory.getLogger(RatingService.class);
 
     @Autowired
-    public RatingService(BookRepo bookRepo, RatingRepo ratingRepo, UserRepo userRepo) {
+    public RatingService(BookRepo bookRepo, RatingRepo ratingRepo, UserRepo userRepo, JwtUtil jwtUtil) {
         this.bookRepo = bookRepo;
         this.ratingRepo = ratingRepo;
         this.userRepo = userRepo;
+        this.jwtUtil = jwtUtil;
     }
 
     public List<Rating> getRatings(Long id) throws NoSuchElementException {
@@ -39,34 +46,51 @@ public class RatingService {
 
         Book book = optionalBook.get();
         ratings = book.getRatings();
+        log.info("Ratings for book: {} has been returned!", book.getIsbn());
         return ratings;
     }
 
-    public void addRating(Rating rating, Long bookId, String userId) throws Exception {
-        try {
-            Book book = bookRepo.findById(bookId).get();
-            User user = userRepo.findById(userId).get();
+    public void addRating(Rating rating, Long bookId, Cookie[] cookies) throws NoSuchElementException {
 
-            book.addRating(rating);
-            user.setUserOnRating(rating);
+        Optional<Book> optionalBook = bookRepo.findById(bookId);
 
-            bookRepo.save(book);
-            userRepo.save(user);
-        } catch (Exception e) {
-            throw new Exception();
+        if (optionalBook.isEmpty()) {
+            throw new NoSuchElementException();
         }
+        Book book = optionalBook.get();
+
+        Cookie authorizationCookie = Arrays.stream(cookies).
+                filter(cookie -> "authorization".equals(cookie.getName())).findAny().orElse(null);
+
+        String userNickname = jwtUtil.extractUserName(authorizationCookie.getValue());
+
+        String userId = StreamSupport.stream(userRepo.findAll().spliterator(), false).
+                filter(user -> userNickname.equals(user.getNickname())).findAny().orElse(null).getId();
+
+        User user = userRepo.findById(userId).get();
+
+        book.addRating(rating);
+        user.setUserOnRating(rating);
+
+        log.info("Rating for book: {} has been added!", book.getIsbn());
+        bookRepo.save(book);
+        userRepo.save(user);
     }
 
-    public void deleteRating(Long id) throws Exception {
-        try{
-            Rating rating = ratingRepo.findById(id).get();
+    public void deleteRating(Long id) throws NoSuchElementException {
 
-            rating.getBook().getRatings().remove(rating);
-            rating.getUser().getRatings().remove(rating);
+        Optional<Rating> optionalRating = ratingRepo.findById(id);
 
-            ratingRepo.delete(rating);
-        } catch (Exception e){
-            throw new Exception();
+        if (optionalRating.isEmpty()) {
+            throw new NoSuchElementException();
         }
+
+        Rating rating = optionalRating.get();
+        rating.getBook().getRatings().remove(rating);
+        rating.getUser().getRatings().remove(rating);
+
+        ratingRepo.delete(rating);
+        log.info("Ratings for book: {} has been added!", rating.getBook().getIsbn());
     }
+
 }

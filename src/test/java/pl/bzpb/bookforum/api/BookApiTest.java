@@ -26,15 +26,14 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @AutoConfigureMockMvc
 @WithMockUser(roles = "ADMIN")
-class BookServiceApiTest {
+class BookApiTest {
 
     @Autowired
     private MockMvc mockMvc;
 
     @Test
-    //W ten sposób wszystko w teście jest wywoływane w jednej transakcji a na koniec testu zostanie ona zrollbackowana
-    @Transactional
-    void testGet() throws Exception {
+    @Transactional //W ten sposób wszystko w teście jest wywoływane w jednej transakcji a na koniec testu zostanie ona zrollbackowana
+    void should_return_book_from_db() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/book"))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().is(200))
@@ -43,7 +42,7 @@ class BookServiceApiTest {
 
     @Test
     @Transactional
-    void testPost() throws Exception {
+    void should_add_new_book_to_db() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
                 .post("/api/book")
                 .content("{\"isbn\": 3333,\"title\": \"TEST\",\"dateOfPublication\": \"1998-01-01\",\"author\": \"Test\" }")
@@ -55,7 +54,7 @@ class BookServiceApiTest {
 
     @Test
     @Transactional
-    void testDelete() throws Exception {
+    void should_delete_book_in_db() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/book/{id}", 1234))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk());
@@ -63,7 +62,7 @@ class BookServiceApiTest {
 
     @Test
     @Transactional
-    void testPut() throws Exception {
+    void should_update_book_in_db() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
                 .put("/api/book/{id}", 1234)
                 .content("{\"isbn\": \"\" ,\"title\": \"Zmiana\",\"dateOfPublication\": \"1999-01-01\",\"author\": \"Autora\" }")

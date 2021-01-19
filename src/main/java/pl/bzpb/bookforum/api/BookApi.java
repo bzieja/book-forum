@@ -11,12 +11,12 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/book")
-public class BookServiceApi {
+public class BookApi {
 
     BookService bookService;
 
     @Autowired
-    public BookServiceApi(BookService bookService) {
+    public BookApi(BookService bookService) {
         this.bookService = bookService;
     }
 
@@ -46,7 +46,7 @@ public class BookServiceApi {
             bookService.deleteBook(id);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
@@ -59,8 +59,5 @@ public class BookServiceApi {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
     }
-
-
-
 
 }

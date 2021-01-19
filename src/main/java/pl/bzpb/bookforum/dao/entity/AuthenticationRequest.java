@@ -1,20 +1,20 @@
 package pl.bzpb.bookforum.dao.entity;
 
 public class AuthenticationRequest {
-    private String username;
+    private String nickname;
     private String password;
 
-    public AuthenticationRequest(String username, String password) {
-        this.username = username;
+    public AuthenticationRequest(String nickname, String password) {
+        this.nickname = nickname;
         this.password = password;
     }
 
-    public String getUsername() {
-        return username;
+    public String getNickname() {
+        return nickname;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
     }
 
     public String getPassword() {
