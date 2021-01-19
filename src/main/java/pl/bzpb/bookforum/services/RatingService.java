@@ -41,6 +41,7 @@ public class RatingService {
         Optional<Book> optionalBook = bookRepo.findById(id);
 
         if(optionalBook.isEmpty()){
+            log.info("There is no such book!");
             throw new NoSuchElementException();
         }
 
@@ -55,6 +56,7 @@ public class RatingService {
         Optional<Book> optionalBook = bookRepo.findById(bookId);
 
         if (optionalBook.isEmpty()) {
+            log.info("There is no such book!");
             throw new NoSuchElementException();
         }
         Book book = optionalBook.get();
@@ -82,6 +84,7 @@ public class RatingService {
         Optional<Rating> optionalRating = ratingRepo.findById(id);
 
         if (optionalRating.isEmpty()) {
+            log.info("There is no such rating!");
             throw new NoSuchElementException();
         }
 

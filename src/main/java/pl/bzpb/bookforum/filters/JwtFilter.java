@@ -34,7 +34,7 @@ public class JwtFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
 
-        Cookie authorizationCookie = Arrays.stream(httpServletRequest.getCookies()).
+        Cookie authorizationCookie = httpServletRequest.getCookies() == null ? null : Arrays.stream(httpServletRequest.getCookies()).
                 filter(cookie -> "authorization".equals(cookie.getName())).findAny().orElse(null);
 
         String username = null;

@@ -1,0 +1,255 @@
+openapi: 3.0.1
+info:
+  title: BookForum API
+  description: An API that allows users to rank books and discuss them
+  version: "1.0"
+servers:
+- url: http://localhost:8080
+  description: Generated server url
+paths:
+  /api/book/{id}:
+    put:
+      tags:
+      - book-api
+      operationId: editBook
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Book'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+    delete:
+      tags:
+      - book-api
+      operationId: deleteBook
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/user:
+    post:
+      tags:
+      - user-api
+      operationId: register
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/user/login:
+    post:
+      tags:
+      - user-api
+      operationId: login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthenticationRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+  /api/book:
+    get:
+      tags:
+      - book-api
+      operationId: getBooks_1
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Book'
+    post:
+      tags:
+      - book-api
+      operationId: addBook
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Book'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/book/rating/{id}:
+    get:
+      tags:
+      - rating-api
+      operationId: getRatings
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Rating'
+    post:
+      tags:
+      - rating-api
+      operationId: addRating
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Rating'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+    delete:
+      tags:
+      - rating-api
+      operationId: deleteRating
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/user/ratings/{nickname}:
+    get:
+      tags:
+      - user-api
+      operationId: getBooks
+      parameters:
+      - name: nickname
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Rating'
+components:
+  schemas:
+    Book:
+      type: object
+      properties:
+        isbn:
+          type: integer
+          format: int64
+        title:
+          type: string
+        dateOfPublication:
+          type: string
+          format: date
+        author:
+          type: string
+    Rating:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        rank:
+          type: number
+          format: double
+        comment:
+          type: string
+        addingDate:
+          type: string
+          format: date
+    User:
+      type: object
+      properties:
+        mail:
+          type: string
+        nickname:
+          type: string
+        password:
+          type: string
+        roles:
+          type: string
+        id:
+          type: string
+        active:
+          type: boolean
+        userOnRating:
+          $ref: '#/components/schemas/Rating'
+    AuthenticationRequest:
+      type: object
+      properties:
+        nickname:
+          type: string
+        password:
+          type: string

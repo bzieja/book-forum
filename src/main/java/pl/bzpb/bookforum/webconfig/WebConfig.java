@@ -36,7 +36,7 @@ public class WebConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                     .antMatchers(HttpMethod.POST, "/api/user").permitAll()
                     .antMatchers(HttpMethod.POST, "/api/user/login").permitAll()
-                    .antMatchers(HttpMethod.GET, "/api/user/ratings").permitAll()
+                    .antMatchers(HttpMethod.GET, "/api/user/ratings/*").permitAll()
 
                     .antMatchers(HttpMethod.DELETE,"/api/book/*").hasRole("ADMIN")
                     .antMatchers(HttpMethod.PUT,"/api/book/*").hasRole("ADMIN")
@@ -47,12 +47,14 @@ public class WebConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers(HttpMethod.POST,"/api/book/rating/*").permitAll()
                     .antMatchers(HttpMethod.GET,"/api/book/rating/*").permitAll()
 
+                    .antMatchers("/v3/api-docs/**").permitAll()
+                    .antMatchers("/swagger-ui/**").permitAll()
+                    .antMatchers("/swagger-ui.html").permitAll()
 
                 .anyRequest().authenticated()
                 .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
-
         //super.configure(http);
     }
 

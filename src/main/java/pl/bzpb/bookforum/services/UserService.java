@@ -52,6 +52,7 @@ public class UserService {
 
         if (userOptional.isPresent() || StreamSupport.stream(userRepo.findAll().spliterator(), false).
                 anyMatch(x -> user.getNickname().equals(x.getNickname()))) {
+            log.info("User with this mail or nickname is already registered!");
             throw new UserAlreadyRegistered();
         }
 
@@ -82,6 +83,7 @@ public class UserService {
                 filter(user -> userNickname.equals(user.getNickname())).findAny().orElse(null);
 
         if (optionalUser == null) {
+            log.info("There is no user with nickname: {} in database", userNickname);
             throw new NoSuchElementException();
         }
 

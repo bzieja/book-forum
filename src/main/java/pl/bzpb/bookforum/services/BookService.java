@@ -29,6 +29,7 @@ public class BookService {
         Optional<Book> optionalBook = bookRepo.findById(book.getIsbn());
 
         if (optionalBook.isPresent()) {
+            log.info("The book is already in database!");
             throw new BookAlreadyExist();
         }
         bookRepo.save(book);
@@ -44,6 +45,7 @@ public class BookService {
         Optional<Book> optionalBook = bookRepo.findById(id);
 
         if(optionalBook.isEmpty()){
+            log.info("There is no such book!");
             throw new NoSuchElementException();
         }
 
@@ -57,6 +59,7 @@ public class BookService {
         Optional<Book> optionalBook = bookRepo.findById(id);
 
         if(optionalBook.isEmpty()){
+            log.info("There is no such book!");
             throw new NoSuchElementException();
         }
 
