@@ -10,9 +10,12 @@ import java.util.List;
 public class User {
 
     @Id
+    @JsonIgnore
     private String mail;
 
     private String nickname;
+
+    @JsonIgnore
     private String password;
     private String roles;
     private boolean isActive;

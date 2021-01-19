@@ -50,7 +50,7 @@ public class UserApi {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping("/ratings/{nickname}")
+    @GetMapping("/rating/{nickname}")
     ResponseEntity<List<Rating>> getBooks(@PathVariable String nickname) {
         try{
             List <Rating> ratings = userService.getUserRatings(nickname);

@@ -36,16 +36,16 @@ public class WebConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                     .antMatchers(HttpMethod.POST, "/api/user").permitAll()
                     .antMatchers(HttpMethod.POST, "/api/user/login").permitAll()
-                    .antMatchers(HttpMethod.GET, "/api/user/ratings/*").permitAll()
+                    .antMatchers(HttpMethod.GET, "/api/user/rating/*").hasAnyRole("ADMIN", "USER")
 
                     .antMatchers(HttpMethod.DELETE,"/api/book/*").hasRole("ADMIN")
                     .antMatchers(HttpMethod.PUT,"/api/book/*").hasRole("ADMIN")
-                    .antMatchers(HttpMethod.POST,"/api/book").permitAll()
-                    .antMatchers(HttpMethod.GET,"/api/book").permitAll()
+                    .antMatchers(HttpMethod.POST,"/api/book").hasRole("ADMIN")
+                    .antMatchers(HttpMethod.GET,"/api/book").hasAnyRole("ADMIN", "USER")
 
                     .antMatchers(HttpMethod.DELETE,"/api/book/rating/*").hasRole("ADMIN")
-                    .antMatchers(HttpMethod.POST,"/api/book/rating/*").permitAll()
-                    .antMatchers(HttpMethod.GET,"/api/book/rating/*").permitAll()
+                    .antMatchers(HttpMethod.POST,"/api/book/rating/*").hasAnyRole("ADMIN", "USER")
+                    .antMatchers(HttpMethod.GET,"/api/book/rating/*").hasAnyRole("ADMIN", "USER")
 
                     .antMatchers("/v3/api-docs/**").permitAll()
                     .antMatchers("/swagger-ui/**").permitAll()

@@ -32,7 +32,7 @@ class BookApiTest {
     private MockMvc mockMvc;
 
     @Test
-    @Transactional //W ten sposób wszystko w teście jest wywoływane w jednej transakcji a na koniec testu zostanie ona zrollbackowana
+    @Transactional
     void should_return_book_from_db() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/book"))
                 .andDo(MockMvcResultHandlers.print())
