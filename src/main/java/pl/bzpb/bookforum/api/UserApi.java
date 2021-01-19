@@ -4,15 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.bzpb.bookforum.dao.entity.AuthenticationRequest;
-import pl.bzpb.bookforum.dao.entity.Book;
+import pl.bzpb.bookforum.dao.entity.requests.AuthenticationRequest;
 import pl.bzpb.bookforum.dao.entity.Rating;
 import pl.bzpb.bookforum.dao.entity.User;
+import pl.bzpb.bookforum.dao.entity.requests.RegistrationRequest;
 import pl.bzpb.bookforum.services.UserService;
 import pl.bzpb.bookforum.services.exceptions.UserAlreadyRegistered;
 
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
@@ -28,10 +27,10 @@ public class UserApi {
     }
 
     @PostMapping
-    public ResponseEntity<?> register(@RequestBody User user) {
+    public ResponseEntity<?> register(@RequestBody RegistrationRequest registrationRequest) {
 
         try {
-            userService.register(user);
+            userService.register(registrationRequest);
             return new ResponseEntity<>(HttpStatus.CREATED);
         } catch (UserAlreadyRegistered e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

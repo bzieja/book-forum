@@ -10,16 +10,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.bzpb.bookforum.dao.BookRepo;
 import pl.bzpb.bookforum.dao.UserRepo;
-import pl.bzpb.bookforum.dao.entity.AuthenticationRequest;
-import pl.bzpb.bookforum.dao.entity.Book;
+import pl.bzpb.bookforum.dao.entity.requests.AuthenticationRequest;
 import pl.bzpb.bookforum.dao.entity.Rating;
 import pl.bzpb.bookforum.dao.entity.User;
+import pl.bzpb.bookforum.dao.entity.requests.RegistrationRequest;
 import pl.bzpb.bookforum.services.config.MyUserDetailsService;
 import pl.bzpb.bookforum.services.exceptions.UserAlreadyRegistered;
 import pl.bzpb.bookforum.util.JwtUtil;
 
-import javax.servlet.http.Cookie;
-import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -46,20 +44,24 @@ public class UserService {
         this.myUserDetailsService = myUserDetailsService;
     }
 
-    public void register(User user) throws UserAlreadyRegistered{
+    public void register(RegistrationRequest registrationRequest) throws UserAlreadyRegistered{
 
-        Optional<User> userOptional = userRepo.findById(user.getMail());
-
-        if (userOptional.isPresent() || StreamSupport.stream(userRepo.findAll().spliterator(), false).
-                anyMatch(x -> user.getNickname().equals(x.getNickname()))) {
-            log.info("User with this mail or nickname is already registered!");
+        if (StreamSupport.stream(userRepo.findAll().spliterator(), false).
+                anyMatch(user -> registrationRequest.getMail().equals(user.getMail()))) {
+            log.info("User with this mail is already registered!");
+            throw new UserAlreadyRegistered();
+        } else if (StreamSupport.stream(userRepo.findAll().spliterator(), false).
+                anyMatch(user -> registrationRequest.getNickname().equals(user.getNickname()))) {
+            log.info("User with this nickname is already registered!");
             throw new UserAlreadyRegistered();
         }
-
+        User user = new User();
         //user.setRoles("ROLE_USER,ROLE_ADMIN");
+        user.setMail(registrationRequest.getMail());
+        user.setNickname(registrationRequest.getNickname());
+        user.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
         user.setRoles("ROLE_USER");
         user.setActive(true);
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
         log.info("New user: {} (nickname) has been registered!", user.getNickname());
         userRepo.save(user);
     }

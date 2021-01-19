@@ -1,4 +1,4 @@
-package pl.bzpb.bookforum.dao.entity;
+package pl.bzpb.bookforum.dao.entity.requests;
 
 public class AuthenticationRequest {
     private String nickname;
