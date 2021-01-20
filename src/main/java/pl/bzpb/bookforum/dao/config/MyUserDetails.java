@@ -24,8 +24,6 @@ public class MyUserDetails implements UserDetails {
         grantedAuthorities = Arrays.stream(user.getRoles().split(",")).map(SimpleGrantedAuthority::new).collect(Collectors.toList());
     }
 
-    //meotdy na podstawie ktorych bedzie autoryzacja
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return grantedAuthorities;

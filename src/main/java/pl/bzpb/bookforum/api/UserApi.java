@@ -3,6 +3,7 @@ package pl.bzpb.bookforum.api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.*;
 import pl.bzpb.bookforum.dao.entity.requests.AuthenticationRequest;
 import pl.bzpb.bookforum.dao.entity.Rating;
@@ -41,12 +42,16 @@ public class UserApi {
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody AuthenticationRequest authenticationRequest, HttpServletResponse response) {
 
-        Cookie cookie = new Cookie("authorization", userService.login(authenticationRequest));
-        cookie.setMaxAge(60 * 60);
-        cookie.setPath("/");
-        response.addCookie(cookie);
+        try {
+            Cookie cookie = new Cookie("authorization", userService.login(authenticationRequest));
+            cookie.setMaxAge(60 * 60);
+            cookie.setPath("/");
+            response.addCookie(cookie);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (AuthenticationException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
 
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping("/rating/{nickname}")

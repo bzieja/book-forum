@@ -16,7 +16,7 @@ import pl.bzpb.bookforum.filters.JwtFilter;
 import pl.bzpb.bookforum.services.config.MyUserDetailsService;
 
 @EnableWebSecurity
-public class WebConfig extends WebSecurityConfigurerAdapter {
+public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private MyUserDetailsService myUserDetailsService;
@@ -27,9 +27,10 @@ public class WebConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(myUserDetailsService); //w jaki sposob bedzie autoryziowane
+        auth.userDetailsService(myUserDetailsService); //the way of authentication
     }
 
+    //autorizathion
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
