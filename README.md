@@ -1,5 +1,4 @@
 # book-forum
-book-forum created by GitHub Classroom
 
 This REST application allows users to rate and comment on books in the database.
 
